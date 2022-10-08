@@ -5,12 +5,13 @@ services:
   db:
     image: postgres:14-alpine
     ports:
-      - '5432:5432'
+      - ${POSTGRES_EXPOSE_PORT}:5432
     
     environment:
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_USER=postgres
-      - POSTGRES_DB=postgres
+      - TZ: "${POSTGRES_TZ}"
+      - POSTGRES_USER: "${POSTGRES_USER}"
+      - POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
+      - POSTGRES_DB: "${POSTGRES_DB}"
     
     volumes:
       - ./data/db:/var/lib/postgresql/data/
@@ -21,7 +22,7 @@ services:
       dockerfile: Dockerfile
     
     ports:
-      - '3000:3000'
+      - ${FRONTEND_EXPOSE_PORT}:3000
     
     volumes:
       - ./frontend:/app/frontend
@@ -35,12 +36,12 @@ services:
       dockerfile: Dockerfile
     
     environment:
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_USER=postgres
-      - POSTGRES_DB=postgres
+      - POSTGRES_USER: "${POSTGRES_USER}"
+      - POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
+      - POSTGRES_DB: "${POSTGRES_DB}"
     
     ports:
-      - '8000:8000'
+      - ${DJANGO_EXPOSE_PORT}:8000
 
     volumes:
       - ./backend:/app/backend
