@@ -1,17 +1,21 @@
 version: '3.9'
 
+# glpat-3fWUDke1zL_sTJxno5G8 # Full access
+
+# curl --request GET --header "PRIVATE-TOKEN: glpat-jZzyVTG9yhttps://gitlab.com/api/v4/projects/43183534/access_requests"
+# curl -H "PRIVATE-TOKEN: glpat-3fWUDke1zL_sTJxno5G8" "https://gitlab.com/api/v4/projects/43183534/repository/files/README.md/raw?ref=main" -o purge-cache.sh
 
 services:
   db:
     image: postgres:14-alpine
     ports:
-      - ${POSTGRES_EXPOSE_PORT}:5432
+      - 5432
     
     environment:
-      - TZ: "${POSTGRES_TZ}"
-      - POSTGRES_USER: "${POSTGRES_USER}"
-      - POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
-      - POSTGRES_DB: "${POSTGRES_DB}"
+      TZ: "${POSTGRES_TZ}"
+      POSTGRES_USER: "${POSTGRES_USER}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
+      POSTGRES_DB: "${POSTGRES_DB}"
     
     volumes:
       - ./data/db:/var/lib/postgresql/data/
@@ -21,11 +25,15 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
     
+    environment:
+      WDS_SOCKET_PORT: ${FRONTEND_EXPOSE_PORT}
+    
     ports:
       - ${FRONTEND_EXPOSE_PORT}:3000
     
     volumes:
       - ./frontend:/app/frontend
+      - /app/frontend/node_modules
 
     depends_on:
       - backend
@@ -36,9 +44,11 @@ services:
       dockerfile: Dockerfile
     
     environment:
-      - POSTGRES_USER: "${POSTGRES_USER}"
-      - POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
-      - POSTGRES_DB: "${POSTGRES_DB}"
+      POSTGRES_USER: "${POSTGRES_USER}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
+      POSTGRES_DB: "${POSTGRES_DB}"
+      POSTGRES_HOST: "db"
+      POSTGRES_PORT: 5432
     
     ports:
       - ${DJANGO_EXPOSE_PORT}:8000

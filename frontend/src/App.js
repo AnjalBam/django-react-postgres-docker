@@ -15,7 +15,7 @@ function App() {
     <div className="App">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
-        <h1>An Awesome Blog </h1>
+        <h1>Its Awesome </h1>
         <h3>On Django, React, Postgres, and Docker </h3>
 
         <p>{data}</p>
